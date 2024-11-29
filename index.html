@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>세계 지리 퀴즈</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+    .quiz-container {
+      margin: 50px auto;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 80%;
+      max-width: 600px;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+    }
+    .options {
+      margin-top: 20px;
+    }
+    .options button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .options button:hover {
+      background-color: #0056b3;
+    }
+    .score {
+      margin-top: 20px;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>세계 지리 퀴즈</h1>
+    <p>이 국기는 어떤 나라일까요?</p>
+    <img id="flag-image" src="" alt="국기">
+    <div class="options">
+      <button onclick="checkAnswer(this)" data-answer="false">선택지 1</button>
+      <button onclick="checkAnswer(this)" data-answer="false">선택지 2</button>
+      <button onclick="checkAnswer(this)" data-answer="false">선택지 3</button>
+      <button onclick="checkAnswer(this)" data-answer="false">선택지 4</button>
+    </div>
+    <div class="score">
+      점수: <span id="score">0</span>
+    </div>
+    <div id="result" style="margin-top: 20px; font-size: 1.5em;"></div>
+  </div>
+
+  <script>
+    // 국기와 국가 데이터
+    const flags = [
+    {
+        "country": "사우스 조지아",
+        "src": "https://flagcdn.com/gs.svg"
+    },
+    {
+        "country": "그레나다",
+        "src": "https://flagcdn.com/gd.svg"
+    },
+    {
+        "country": "스위스",
+        "src": "https://flagcdn.com/ch.svg"
+    },
+    {
+        "country": "시에라리온",
+        "src": "https://flagcdn.com/sl.svg"
+    },
+    {
+        "country": "헝가리",
+        "src": "https://flagcdn.com/hu.svg"
+    },
+    {
+        "country": "대만",
+        "src": "https://flagcdn.com/tw.svg"
+    },
+    {
+        "country": "월리스 푸투나",
+        "src": "https://flagcdn.com/wf.svg"
+    },
+    {
+        "country": "바베이도스",
+        "src": "https://flagcdn.com/bb.svg"
+    },
+    {
+        "country": "피트케언 제도",
+        "src": "https://flagcdn.com/pn.svg"
+    },
+    {
+        "country": "상아 해안",
+        "src": "https://flagcdn.com/ci.svg"
+    },
+    {
+        "country": "튀니지",
+        "src": "https://flagcdn.com/tn.svg"
+    },
+    {
+        "country": "이탈리아",
+        "src": "https://flagcdn.com/it.svg"
+    },
+    {
+        "country": "베냉",
+        "src": "https://flagcdn.com/bj.svg"
+    },
+    {
+        "country": "인도네시아 공화국",
+        "src": "https://flagcdn.com/id.svg"
+    },
+    {
+        "country": "카보베르데",
+        "src": "https://flagcdn.com/cv.svg"
+    },
+    {
+        "country": "세인트키츠네비스",
+        "src": "https://flagcdn.com/kn.svg"
+    },
+    {
+        "country": "라오스",
+        "src": "https://flagcdn.com/la.svg"
+    },
+    {
+        "country": "카리브해 네덜란드",
+        "src": "https://flagcdn.com/bq.svg"
+    },
+    {
+        "country": "우간다",
+        "src": "https://flagcdn.com/ug.svg"
+    },
+    {
+        "country": "안도라",
+        "src": "https://flagcdn.com/ad.svg"
+    },
+    {
+        "country": "부룬디",
+        "src": "https://flagcdn.com/bi.svg"
+    },
+    {
+        "country": "남아프리카 공화국",
+        "src": "https://flagcdn.com/za.svg"
+    },
+    {
+        "country": "프랑스",
+        "src": "https://flagcdn.com/fr.svg"
+    },
+    {
+        "country": "리비아",
+        "src": "https://flagcdn.com/ly.svg"
+    },
+    {
+        "country": "멕시코",
+        "src": "https://flagcdn.com/mx.svg"
+    },
+    {
+        "country": "가봉",
+        "src": "https://flagcdn.com/ga.svg"
+    },
+    {
+        "country": "북마리아나 제도",
+        "src": "https://flagcdn.com/mp.svg"
+    },
+    {
+        "country": "북마케도니아",
+        "src": "https://flagcdn.com/mk.svg"
+    },
+    {
+        "country": "중국",
+        "src": "https://flagcdn.com/cn.svg"
+    },
+    {
+        "country": "예멘 아랍 공화국",
+        "src": "https://flagcdn.com/ye.svg"
+    },
+    {
+        "country": "생 바르텔레미",
+        "src": "https://flagcdn.com/bl.svg"
+    },
+    {
+        "country": "건지",
+        "src": "https://flagcdn.com/gg.svg"
+    },
+    {
+        "country": "솔로몬 제도",
+        "src": "https://flagcdn.com/sb.svg"
+    },
+    {
+        "country": "스발바르 얀마옌 제도",
+        "src": "https://flagcdn.com/sj.svg"
+    },
+    {
+        "country": "페로 제도",
+        "src": "https://flagcdn.com/fo.svg"
+    },
+    {
+        "country": "우즈베키스탄",
+        "src": "https://flagcdn.com/uz.svg"
+    },
+    {
+        "country": "이집트",
+        "src": "https://flagcdn.com/eg.svg"
+    },
+    {
+        "country": "세네갈",
+        "src": "https://flagcdn.com/sn.svg"
+    },
+    {
+        "country": "스리랑카",
+        "src": "https://flagcdn.com/lk.svg"
+    },
+    {
+        "country": "팔레스타인",
+        "src": "https://flagcdn.com/ps.svg"
+    },
+    {
+        "country": "방글라데시",
+        "src": "https://flagcdn.com/bd.svg"
+    },
+    {
+        "country": "페루",
+        "src": "https://flagcdn.com/pe.svg"
+    },
+    {
+        "country": "싱가포르",
+        "src": "https://flagcdn.com/sg.svg"
+    },
+    {
+        "country": "칠면조",
+        "src": "https://flagcdn.com/tr.svg"
+    },
+    {
+        "country": "아프가니스탄",
+        "src": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_the_Taliban.svg"
+    },
+    {
+        "country": "아루바",
+        "src": "https://flagcdn.com/aw.svg"
+    },
+    {
+        "country": "쿡 제도",
+        "src": "https://flagcdn.com/ck.svg"
+    },
+    {
+        "country": "영국",
+        "src": "https://flagcdn.com/gb.svg"
+    },
+    {
+        "country": "잠비아",
+        "src": "https://flagcdn.com/zm.svg"
+    },
+    {
+        "country": "핀란드",
+        "src": "https://flagcdn.com/fi.svg"
+    },
+    {
+        "country": "니제르",
+        "src": "https://flagcdn.com/ne.svg"
+    },
+    {
+        "country": "크리스마스 섬",
+        "src": "https://flagcdn.com/cx.svg"
+    },
+    {
+        "country": "토켈라우",
+        "src": "https://flagcdn.com/tk.svg"
+    },
+    {
+        "country": "기니비사우",
+        "src": "https://flagcdn.com/gw.svg"
+    },
+    {
+        "country": "아제르바이잔",
+        "src": "https://flagcdn.com/az.svg"
+    },
+    {
+        "country": "재결합",
+        "src": "https://flagcdn.com/re.svg"
+    },
+    {
+        "country": "지부티",
+        "src": "https://flagcdn.com/dj.svg"
+    },
+    {
+        "country": "북한",
+        "src": "https://flagcdn.com/kp.svg"
+    },
+    {
+        "country": "모리셔스",
+        "src": "https://flagcdn.com/mu.svg"
+    },
+    {
+        "country": "몬세라트",
+        "src": "https://flagcdn.com/ms.svg"
+    },
+    {
+        "country": "미국령 버진 아일랜드",
+        "src": "https://flagcdn.com/vi.svg"
+    },
+    {
+        "country": "콜롬비아",
+        "src": "https://flagcdn.com/co.svg"
+    },
+    {
+        "country": "그리스",
+        "src": "https://flagcdn.com/gr.svg"
+    },
+    {
+        "country": "크로아티아",
+        "src": "https://flagcdn.com/hr.svg"
+    },
+    {
+        "country": "모로코 가죽",
+        "src": "https://flagcdn.com/ma.svg"
+    },
+    {
+        "country": "알제리",
+        "src": "https://flagcdn.com/dz.svg"
+    },
+    {
+        "country": "남극대륙",
+        "src": "https://flagcdn.com/aq.svg"
+    },
+    {
+        "country": "네덜란드",
+        "src": "https://flagcdn.com/nl.svg"
+    },
+    {
+        "country": "수단",
+        "src": "https://flagcdn.com/sd.svg"
+    },
+    {
+        "country": "피지",
+        "src": "https://flagcdn.com/fj.svg"
+    },
+    {
+        "country": "리히텐슈타인",
+        "src": "https://flagcdn.com/li.svg"
+    },
+    {
+        "country": "네팔",
+        "src": "https://flagcdn.com/np.svg"
+    },
+    {
+        "country": "푸에르토리코",
+        "src": "https://flagcdn.com/pr.svg"
+    },
+    {
+        "country": "그루지야",
+        "src": "https://flagcdn.com/ge.svg"
+    },
+    {
+        "country": "파키스탄",
+        "src": "https://flagcdn.com/pk.svg"
+    },
+    {
+        "country": "모나코",
+        "src": "https://flagcdn.com/mc.svg"
+    },
+    {
+        "country": "보츠와나",
+        "src": "https://flagcdn.com/bw.svg"
+    },
+    {
+        "country": "레바논",
+        "src": "https://flagcdn.com/lb.svg"
+    },
+    {
+        "country": "파푸아뉴기니",
+        "src": "https://flagcdn.com/pg.svg"
+    },
+    {
+        "country": "마요트",
+        "src": "https://flagcdn.com/yt.svg"
+    },
+    {
+        "country": "도미니카 공화국",
+        "src": "https://flagcdn.com/do.svg"
+    },
+    {
+        "country": "노퍽 섬",
+        "src": "https://flagcdn.com/nf.svg"
+    },
+    {
+        "country": "부베 섬",
+        "src": "https://flagcdn.com/bv.svg"
+    },
+    {
+        "country": "카타르",
+        "src": "https://flagcdn.com/qa.svg"
+    },
+    {
+        "country": "마다가스카르",
+        "src": "https://flagcdn.com/mg.svg"
+    },
+    {
+        "country": "인도",
+        "src": "https://flagcdn.com/in.svg"
+    },
+    {
+        "country": "시리아",
+        "src": "https://flagcdn.com/sy.svg"
+    },
+    {
+        "country": "몬테네그로",
+        "src": "https://flagcdn.com/me.svg"
+    },
+    {
+        "country": "에스와티니",
+        "src": "https://flagcdn.com/sz.svg"
+    },
+    {
+        "country": "파라과이",
+        "src": "https://flagcdn.com/py.svg"
+    },
+    {
+        "country": "엘살바도르",
+        "src": "https://flagcdn.com/sv.svg"
+    },
+    {
+        "country": "우크라이나",
+        "src": "https://flagcdn.com/ua.svg"
+    },
+    {
+        "country": "맨 섬",
+        "src": "https://flagcdn.com/im.svg"
+    },
+    {
+        "country": "나미비아",
+        "src": "https://flagcdn.com/na.svg"
+    },
+    {
+        "country": "아랍에미리트",
+        "src": "https://flagcdn.com/ae.svg"
+    },
+    {
+        "country": "불가리아",
+        "src": "https://flagcdn.com/bg.svg"
+    },
+    {
+        "country": "그린란드",
+        "src": "https://flagcdn.com/gl.svg"
+    },
+    {
+        "country": "독일",
+        "src": "https://flagcdn.com/de.svg"
+    },
+    {
+        "country": "캄보디아",
+        "src": "https://flagcdn.com/kh.svg"
+    },
+    {
+        "country": "이라크",
+        "src": "https://flagcdn.com/iq.svg"
+    },
+    {
+        "country": "프랑스령 남방 및 남극 지역",
+        "src": "https://flagcdn.com/tf.svg"
+    },
+    {
+        "country": "스웨덴",
+        "src": "https://flagcdn.com/se.svg"
+    },
+    {
+        "country": "쿠바",
+        "src": "https://flagcdn.com/cu.svg"
+    },
+    {
+        "country": "키르기스스탄",
+        "src": "https://flagcdn.com/kg.svg"
+    },
+    {
+        "country": "러시아 제국",
+        "src": "https://flagcdn.com/ru.svg"
+    },
+    {
+        "country": "말레이시아",
+        "src": "https://flagcdn.com/my.svg"
+    },
+    {
+        "country": "상투메 프린시페",
+        "src": "https://flagcdn.com/st.svg"
+    },
+    {
+        "country": "키프로스",
+        "src": "https://flagcdn.com/cy.svg"
+    },
+    {
+        "country": "캐나다",
+        "src": "https://flagcdn.com/ca.svg"
+    },
+    {
+        "country": "말라위",
+        "src": "https://flagcdn.com/mw.svg"
+    },
+    {
+        "country": "사우디 아라비아",
+        "src": "https://flagcdn.com/sa.svg"
+    },
+    {
+        "country": "보스니아 헤르체고비나",
+        "src": "https://flagcdn.com/ba.svg"
+    },
+    {
+        "country": "에티오피아",
+        "src": "https://flagcdn.com/et.svg"
+    },
+    {
+        "country": "스페인",
+        "src": "https://flagcdn.com/es.svg"
+    },
+    {
+        "country": "슬로베니아",
+        "src": "https://flagcdn.com/si.svg"
+    },
+    {
+        "country": "오만",
+        "src": "https://flagcdn.com/om.svg"
+    },
+    {
+        "country": "생피에르 미클롱",
+        "src": "https://flagcdn.com/pm.svg"
+    },
+    {
+        "country": "마카오",
+        "src": "https://flagcdn.com/mo.svg"
+    },
+    {
+        "country": "산마리노",
+        "src": "https://flagcdn.com/sm.svg"
+    },
+    {
+        "country": "레소토",
+        "src": "https://flagcdn.com/ls.svg"
+    },
+    {
+        "country": "마셜 제도",
+        "src": "https://flagcdn.com/mh.svg"
+    },
+    {
+        "country": "신트마르틴",
+        "src": "https://flagcdn.com/sx.svg"
+    },
+    {
+        "country": "아이슬란드",
+        "src": "https://flagcdn.com/is.svg"
+    },
+    {
+        "country": "룩셈부르크",
+        "src": "https://flagcdn.com/lu.svg"
+    },
+    {
+        "country": "아르헨티나",
+        "src": "https://flagcdn.com/ar.svg"
+    },
+    {
+        "country": "터크스 케이커스 제도",
+        "src": "https://flagcdn.com/tc.svg"
+    },
+    {
+        "country": "나우루",
+        "src": "https://flagcdn.com/nr.svg"
+    },
+    {
+        "country": "코코스(킬링) 제도",
+        "src": "https://flagcdn.com/cc.svg"
+    },
+    {
+        "country": "서사하라",
+        "src": "https://flagcdn.com/eh.svg"
+    },
+    {
+        "country": "도미니카",
+        "src": "https://flagcdn.com/dm.svg"
+    },
+    {
+        "country": "코스타리카",
+        "src": "https://flagcdn.com/cr.svg"
+    },
+    {
+        "country": "호주",
+        "src": "https://flagcdn.com/au.svg"
+    },
+    {
+        "country": "태국",
+        "src": "https://flagcdn.com/th.svg"
+    },
+    {
+        "country": "아이티",
+        "src": "https://flagcdn.com/ht.svg"
+    },
+    {
+        "country": "투발루",
+        "src": "https://flagcdn.com/tv.svg"
+    },
+    {
+        "country": "온두라스",
+        "src": "https://flagcdn.com/hn.svg"
+    },
+    {
+        "country": "적도 기니",
+        "src": "https://flagcdn.com/gq.svg"
+    },
+    {
+        "country": "세인트 루시아",
+        "src": "https://flagcdn.com/lc.svg"
+    },
+    {
+        "country": "프랑스령 폴리네시아",
+        "src": "https://flagcdn.com/pf.svg"
+    },
+    {
+        "country": "벨라루스",
+        "src": "https://flagcdn.com/by.svg"
+    },
+    {
+        "country": "라트비아",
+        "src": "https://flagcdn.com/lv.svg"
+    },
+    {
+        "country": "팔라우",
+        "src": "https://flagcdn.com/pw.svg"
+    },
+    {
+        "country": "과들루프",
+        "src": "https://flagcdn.com/gp.svg"
+    },
+    {
+        "country": "필리핀 제도",
+        "src": "https://flagcdn.com/ph.svg"
+    },
+    {
+        "country": "지브롤터",
+        "src": "https://flagcdn.com/gi.svg"
+    },
+    {
+        "country": "덴마크",
+        "src": "https://flagcdn.com/dk.svg"
+    },
+    {
+        "country": "카메룬",
+        "src": "https://flagcdn.com/cm.svg"
+    },
+    {
+        "country": "기니",
+        "src": "https://flagcdn.com/gn.svg"
+    },
+    {
+        "country": "바레인",
+        "src": "https://flagcdn.com/bh.svg"
+    },
+    {
+        "country": "수리남",
+        "src": "https://flagcdn.com/sr.svg"
+    },
+    {
+        "country": "콩고 민주 공화국",
+        "src": "https://flagcdn.com/cd.svg"
+    },
+    {
+        "country": "소말리아",
+        "src": "https://flagcdn.com/so.svg"
+    },
+    {
+        "country": "체코",
+        "src": "https://flagcdn.com/cz.svg"
+    },
+    {
+        "country": "뉴 칼레도니아",
+        "src": "https://flagcdn.com/nc.svg"
+    },
+    {
+        "country": "바누아투",
+        "src": "https://flagcdn.com/vu.svg"
+    },
+    {
+        "country": "세인트 헬레나, 어센션, 트리스탄 다 쿠냐",
+        "src": "https://flagcdn.com/sh.svg"
+    },
+    {
+        "country": "토고",
+        "src": "https://flagcdn.com/tg.svg"
+    },
+    {
+        "country": "영국령 버진 아일랜드",
+        "src": "https://flagcdn.com/vg.svg"
+    },
+    {
+        "country": "케냐",
+        "src": "https://flagcdn.com/ke.svg"
+    },
+    {
+        "country": "니우에",
+        "src": "https://flagcdn.com/nu.svg"
+    },
+    {
+        "country": "허드 섬과 맥도날드 섬",
+        "src": "https://flagcdn.com/hm.svg"
+    },
+    {
+        "country": "르완다",
+        "src": "https://flagcdn.com/rw.svg"
+    },
+    {
+        "country": "에스토니아",
+        "src": "https://flagcdn.com/ee.svg"
+    },
+    {
+        "country": "루마니아",
+        "src": "https://flagcdn.com/ro.svg"
+    },
+    {
+        "country": "트리니다드 토바고",
+        "src": "https://flagcdn.com/tt.svg"
+    },
+    {
+        "country": "가이아나",
+        "src": "https://flagcdn.com/gy.svg"
+    },
+    {
+        "country": "동티모르",
+        "src": "https://flagcdn.com/tl.svg"
+    },
+    {
+        "country": "베트남",
+        "src": "https://flagcdn.com/vn.svg"
+    },
+    {
+        "country": "우루과이",
+        "src": "https://flagcdn.com/uy.svg"
+    },
+    {
+        "country": "바티칸 시국",
+        "src": "https://flagcdn.com/va.svg"
+    },
+    {
+        "country": "홍콩",
+        "src": "https://flagcdn.com/hk.svg"
+    },
+    {
+        "country": "오스트리아",
+        "src": "https://flagcdn.com/at.svg"
+    },
+    {
+        "country": "앤티가 바부다",
+        "src": "https://flagcdn.com/ag.svg"
+    },
+    {
+        "country": "투르크메니스탄",
+        "src": "https://flagcdn.com/tm.svg"
+    },
+    {
+        "country": "모잠비크",
+        "src": "https://flagcdn.com/mz.svg"
+    },
+    {
+        "country": "파나마",
+        "src": "https://flagcdn.com/pa.svg"
+    },
+    {
+        "country": "미크로네시아",
+        "src": "https://flagcdn.com/fm.svg"
+    },
+    {
+        "country": "아일랜드",
+        "src": "https://flagcdn.com/ie.svg"
+    },
+    {
+        "country": "퀴라소",
+        "src": "https://flagcdn.com/cw.svg"
+    },
+    {
+        "country": "프랑스령 기아나",
+        "src": "https://flagcdn.com/gf.svg"
+    },
+    {
+        "country": "노르웨이",
+        "src": "https://flagcdn.com/no.svg"
+    },
+    {
+        "country": "올란드 제도",
+        "src": "https://flagcdn.com/ax.svg"
+    },
+    {
+        "country": "중앙 아프리카 공화국",
+        "src": "https://flagcdn.com/cf.svg"
+    },
+    {
+        "country": "부르키나파소",
+        "src": "https://flagcdn.com/bf.svg"
+    },
+    {
+        "country": "에리트레아",
+        "src": "https://flagcdn.com/er.svg"
+    },
+    {
+        "country": "탄자니아",
+        "src": "https://flagcdn.com/tz.svg"
+    },
+    {
+        "country": "대한민국",
+        "src": "https://flagcdn.com/kr.svg"
+    },
+    {
+        "country": "요르단",
+        "src": "https://flagcdn.com/jo.svg"
+    },
+    {
+        "country": "모리타니",
+        "src": "https://flagcdn.com/mr.svg"
+    },
+    {
+        "country": "리투아니아",
+        "src": "https://flagcdn.com/lt.svg"
+    },
+    {
+        "country": "미국 군소 외딴 섬",
+        "src": "https://flagcdn.com/um.svg"
+    },
+    {
+        "country": "슬로바키아",
+        "src": "https://flagcdn.com/sk.svg"
+    },
+    {
+        "country": "앙골라",
+        "src": "https://flagcdn.com/ao.svg"
+    },
+    {
+        "country": "카자흐스탄",
+        "src": "https://flagcdn.com/kz.svg"
+    },
+    {
+        "country": "몰도바",
+        "src": "https://flagcdn.com/md.svg"
+    },
+    {
+        "country": "말리",
+        "src": "https://flagcdn.com/ml.svg"
+    },
+    {
+        "country": "포클랜드 제도",
+        "src": "https://flagcdn.com/fk.svg"
+    },
+    {
+        "country": "아르메니아",
+        "src": "https://flagcdn.com/am.svg"
+    },
+    {
+        "country": "사모아",
+        "src": "https://flagcdn.com/ws.svg"
+    },
+    {
+        "country": "저지",
+        "src": "https://flagcdn.com/je.svg"
+    },
+    {
+        "country": "일본",
+        "src": "https://flagcdn.com/jp.svg"
+    },
+    {
+        "country": "볼리비아",
+        "src": "https://flagcdn.com/bo.svg"
+    },
+    {
+        "country": "칠레",
+        "src": "https://flagcdn.com/cl.svg"
+    },
+    {
+        "country": "미국",
+        "src": "https://flagcdn.com/us.svg"
+    },
+    {
+        "country": "세인트 빈센트 그레나딘",
+        "src": "https://flagcdn.com/vc.svg"
+    },
+    {
+        "country": "버뮤다",
+        "src": "https://flagcdn.com/bm.svg"
+    },
+    {
+        "country": "세이셸",
+        "src": "https://flagcdn.com/sc.svg"
+    },
+    {
+        "country": "영국령 인도양 지역",
+        "src": "https://flagcdn.com/io.svg"
+    },
+    {
+        "country": "과테말라",
+        "src": "https://flagcdn.com/gt.svg"
+    },
+    {
+        "country": "에콰도르",
+        "src": "https://flagcdn.com/ec.svg"
+    },
+    {
+        "country": "마르티니크",
+        "src": "https://flagcdn.com/mq.svg"
+    },
+    {
+        "country": "타지키스탄",
+        "src": "https://flagcdn.com/tj.svg"
+    },
+    {
+        "country": "몰타",
+        "src": "https://flagcdn.com/mt.svg"
+    },
+    {
+        "country": "감비아",
+        "src": "https://flagcdn.com/gm.svg"
+    },
+    {
+        "country": "나이지리아",
+        "src": "https://flagcdn.com/ng.svg"
+    },
+    {
+        "country": "바하마",
+        "src": "https://flagcdn.com/bs.svg"
+    },
+    {
+        "country": "코소보",
+        "src": "https://flagcdn.com/xk.svg"
+    },
+    {
+        "country": "쿠웨이트",
+        "src": "https://flagcdn.com/kw.svg"
+    },
+    {
+        "country": "몰디브",
+        "src": "https://flagcdn.com/mv.svg"
+    },
+    {
+        "country": "남수단",
+        "src": "https://flagcdn.com/ss.svg"
+    },
+    {
+        "country": "이란",
+        "src": "https://flagcdn.com/ir.svg"
+    },
+    {
+        "country": "알바니아",
+        "src": "https://flagcdn.com/al.svg"
+    },
+    {
+        "country": "브라질",
+        "src": "https://flagcdn.com/br.svg"
+    },
+    {
+        "country": "세르비아",
+        "src": "https://flagcdn.com/rs.svg"
+    },
+    {
+        "country": "벨리즈",
+        "src": "https://flagcdn.com/bz.svg"
+    },
+    {
+        "country": "미얀마",
+        "src": "https://flagcdn.com/mm.svg"
+    },
+    {
+        "country": "부탄",
+        "src": "https://flagcdn.com/bt.svg"
+    },
+    {
+        "country": "베네수엘라",
+        "src": "https://flagcdn.com/ve.svg"
+    },
+    {
+        "country": "라이베리아",
+        "src": "https://flagcdn.com/lr.svg"
+    },
+    {
+        "country": "자메이카",
+        "src": "https://flagcdn.com/jm.svg"
+    },
+    {
+        "country": "폴란드",
+        "src": "https://flagcdn.com/pl.svg"
+    },
+    {
+        "country": "케이맨 제도",
+        "src": "https://flagcdn.com/ky.svg"
+    },
+    {
+        "country": "브루나이",
+        "src": "https://flagcdn.com/bn.svg"
+    },
+    {
+        "country": "코모로",
+        "src": "https://flagcdn.com/km.svg"
+    },
+    {
+        "country": "괌",
+        "src": "https://flagcdn.com/gu.svg"
+    },
+    {
+        "country": "통가",
+        "src": "https://flagcdn.com/to.svg"
+    },
+    {
+        "country": "키리바시",
+        "src": "https://flagcdn.com/ki.svg"
+    },
+    {
+        "country": "가나",
+        "src": "https://flagcdn.com/gh.svg"
+    },
+    {
+        "country": "차드",
+        "src": "https://flagcdn.com/td.svg"
+    },
+    {
+        "country": "짐바브웨",
+        "src": "https://flagcdn.com/zw.svg"
+    },
+    {
+        "country": "생 마르탱",
+        "src": "https://flagcdn.com/mf.svg"
+    },
+    {
+        "country": "몽골리아",
+        "src": "https://flagcdn.com/mn.svg"
+    },
+    {
+        "country": "포르투갈",
+        "src": "https://flagcdn.com/pt.svg"
+    },
+    {
+        "country": "아메리칸 사모아",
+        "src": "https://flagcdn.com/as.svg"
+    },
+    {
+        "country": "콩고 공화국",
+        "src": "https://flagcdn.com/cg.svg"
+    },
+    {
+        "country": "벨기에",
+        "src": "https://flagcdn.com/be.svg"
+    },
+    {
+        "country": "이스라엘",
+        "src": "https://flagcdn.com/il.svg"
+    },
+    {
+        "country": "뉴질랜드",
+        "src": "https://flagcdn.com/nz.svg"
+    },
+    {
+        "country": "니카라과",
+        "src": "https://flagcdn.com/ni.svg"
+    },
+    {
+        "country": "앵귈라",
+        "src": "https://flagcdn.com/ai.svg"
+    }
+];
+    function generateQuestion() {
+    // 랜덤으로 국기를 선택하여 문제로 사용
+    const questionFlag = flags[Math.floor(Math.random() * flags.length)];
+
+    // 선택지 생성 (정답 포함)
+    let options = shuffleArray([...flags.filter(flag => flag.country !== questionFlag.country)]).slice(0, 3); // 정답 제외 3개의 랜덤 선택지
+    options.push(questionFlag); // 정답 추가
+
+    // 선택지를 다시 섞어서 사용자에게 랜덤하게 표시
+    options = shuffleArray(options);
+
+    // 국기 이미지 설정 (문제)
+    document.getElementById("flag-image").src = questionFlag.src;
+
+    // 버튼 텍스트 및 정답 설정
+    const buttons = document.querySelectorAll(".options button");
+
+    buttons.forEach((button, index) => {
+        if (options[index]) { // 선택지가 있는 경우
+        button.textContent = options[index].country;
+        button.dataset.answer = options[index].country === questionFlag.country;
+        } else { // 이론적으로 여기에 들어올 일이 없어야 함
+        button.textContent = "";
+        button.dataset.answer = "false";
+        }
+    });
+
+    // 디버깅: 콘솔에 정답 출력
+    console.log("정답:", questionFlag.country);
+
+    // 이전 결과 초기화
+    document.getElementById("result").textContent = "";
+    }
+
+    // checkAnswer 함수 정의
+    function checkAnswer(button) {
+    // 정답 여부 확인
+    const isCorrect = button.dataset.answer === "true";
+
+    if (isCorrect) {
+        document.getElementById("result").textContent = "정답!";
+        score++;
+    } else {
+        document.getElementById("result").textContent = "오답!";
+    }
+
+    // 점수 업데이트
+    document.getElementById("score").textContent = score;
+
+    // 다음 문제로 넘어가기 (1초 후)
+    setTimeout(generateQuestion, 1000);
+    }
+
+    // 배열 섞기 함수
+    function shuffleArray(array) {
+    return array.sort(() => Math.random() - 0.5);
+    }
+
+// 초기 점수 설정
+let score = 0;
+
+// 첫 문제 생성
+generateQuestion();
+
+
+    
+  </script>
+</body>
+</html>
